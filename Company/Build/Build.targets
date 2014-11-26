@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<BuildDependsOn>
+			StrongNameToolPathMessage;
+			ResolveSigning;
+			$(BuildDependsOn);
+			CreateNuGetPackageIfPossible
+		</BuildDependsOn>
+	</PropertyGroup>
+	<Target Name="CreateNuGetPackageIfPossible">
+		<Message
+			Condition="$(SignAssembly) AND !$(SignedWithDevelopmentKey)"
+			Importance="high"
+			Text="Create a NuGet-package. This message should be replaced by a call to NuGet.exe to build a package from the project. Eg. &quot;%24(SolutionDir).nuget\NuGet.exe&quot; pack &quot;%24(ProjectPath)&quot; -Properties Configuration=%24(ConfigurationName) -IncludeReferencedProjects"
+		/>
+		<Warning
+			Condition="!$(SignAssembly) OR $(SignedWithDevelopmentKey)"
+			Text="A NuGet-package will not be created because %24(SignAssembly) ($(SignAssembly)) is set to false or %24(SignedWithDevelopmentKey) ($(SignedWithDevelopmentKey)) is set to true."
+		/>
+	</Target>
+	<Target Name="ResolveSigning">
+		<PropertyGroup>
+			<SignAssembly Condition="!Exists($(AssemblyOriginatorKeyFile))">false</SignAssembly>
+			<SignedWithDevelopmentKey Condition="!Exists($(AssemblyOriginatorKeyFile))">true</SignedWithDevelopmentKey>
+		</PropertyGroup>
+		<PropertyGroup>
+			<AssemblyOriginatorKeyFile Condition="!Exists($(AssemblyOriginatorKeyFile))">$(StrongNameDevelopmentKeyFile)</AssemblyOriginatorKeyFile>
+		</PropertyGroup>
+		<PropertyGroup Condition="$(FakeMissingStrongNameKeyFile)">
+			<AssemblyOriginatorKeyFile>$(StrongNameDevelopmentKeyFile)</AssemblyOriginatorKeyFile>
+			<SignAssembly>true</SignAssembly>
+			<SignedWithDevelopmentKey>true</SignedWithDevelopmentKey>
+		</PropertyGroup>
+	</Target>
+	<Target Name="StrongNameToolPathMessage">
+		<Message
+			Importance="high"
+			Text="Strong-name-tool path: '%(StrongNameToolPath.Identity)'"
+		/>
+	</Target>
+</Project>

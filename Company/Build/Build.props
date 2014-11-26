@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ItemGroup>
+		<!--
+		<StrongNameToolPath Include="C:\**\sn.exe" />
+		-->
+		<StrongNameToolPath Include="$(TargetFrameworkSDKToolsDirectory)**\sn.exe" />
+	</ItemGroup>
+	<PropertyGroup>
+		<FakeMissingStrongNameKeyFile>true</FakeMissingStrongNameKeyFile>
+		<SignedWithDevelopmentKey>false</SignedWithDevelopmentKey>
+		<StrongNameDevelopmentKeyFile>..\Signing\Company.Development.snk</StrongNameDevelopmentKeyFile>
+	</PropertyGroup>
+</Project>
